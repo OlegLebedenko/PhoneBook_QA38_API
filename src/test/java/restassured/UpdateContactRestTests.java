@@ -14,12 +14,13 @@ public class UpdateContactRestTests implements Helper {
 
     String endpoint = "/v1/contacts";
     String id;
+    ContactDTO contactDTO;
 
     @BeforeMethod
     public void precondition() {
         RestAssured.baseURI = BASE_URI;
 
-        ContactDTO contactDTO = ContactDTO.builder()
+         contactDTO = ContactDTO.builder()
                 .name("Romeo")
                 .lastName("Kaplan")
                 .email("lover_" + i + "@mail.com")
@@ -39,28 +40,22 @@ public class UpdateContactRestTests implements Helper {
                 .extract()
                 .as(ContactResponseDTO.class);
         String message = responseDTO.getMessage();
-        System.out.println(message);
         id = message.substring(message.lastIndexOf(" ") + 1);
-        System.out.println(id);
+
     }
 
     @Test
     public void updateContactPositive(){
 
-        ContactDTO updatedContactDTO = ContactDTO.builder()
-                .id(id)
-                .name("Roman")
-                .lastName("Kaplan")
-                .email("luzer_" + i + "@gmail.com")
-                .phone("87654321" + i)
-                .address("Haifa")
-                .description("Crazy")
-                .build();
+        contactDTO.setId(id);
+        contactDTO.setName("Roman");
+        contactDTO.setEmail("luzer_" + i + "@gmail.com");
+        contactDTO.setAddress("Haifa");
 
 
         ContactResponseDTO responseDTO = given()
                 .header(authH, TOKEN)
-                .body(updatedContactDTO)
+                .body(contactDTO)
                 .contentType(ContentType.JSON)
                 .when()
                 .put(endpoint)
@@ -71,7 +66,7 @@ public class UpdateContactRestTests implements Helper {
 
         String message = responseDTO.getMessage();
         System.out.println(message);
-        System.out.println("New address is: " + updatedContactDTO.getAddress());
-        System.out.println("New email is: " + updatedContactDTO.getEmail());
+        System.out.println("New address is: " + contactDTO.getAddress());
+        System.out.println("New email is: " + contactDTO.getEmail());
     }
 }
